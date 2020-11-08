@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+import CourseList from "./Components/CourseList";
+import CreateCourse from "./Components/CreateCourse";
 
 function App() {
+  const [create, setCreate] = useState(false);
+  const [cDetails, setcDetails] = useState([]);
+  const createScreen = () => {
+    setCreate(!create);
+  };
+
+  useEffect(() => courseDetails(), []);
+  const courseDetails = async () => {
+    const res = await axios.get("http://localhost:8000/course");
+    setcDetails(res.data);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={createScreen}>Create a New Course</button>
+      {create ? <CreateCourse /> : null}
+      <CourseList courseData={cDetails} />
     </div>
   );
 }
